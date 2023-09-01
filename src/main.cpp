@@ -12,6 +12,8 @@
 #include "data.h"
 #include "Settings.h"
 
+#include "oled.h"
+
 #define BUTTON_LEFT 0        // btn activo en bajo
 #define LONG_PRESS_TIME 3000 // 3000 milis = 3s
 
@@ -187,16 +189,8 @@ void setup(){
     DHT.begin(); //  ESP32 default pins 21 22
     pinMode(LED1, OUTPUT);
     pinMode(LED2, OUTPUT);
-    tft.init();
-    tft.setRotation(3);
-    tft.fillScreen(TFT_BLACK);
-    tft.drawString("Realizado por:", 10, 5, 2);
-    tft.drawString("Juan E. Gomez", 10, 23, 4);
-    tft.drawString("Humedad:", 10, 70, 2);
-    tft.drawString("Temperatura", 140, 70, 2);
-    tft.drawFastHLine(10, 50, 170, TFT_GREEN);
-    tft.fillRect(110, 65, 3, 80, TFT_GREEN);
-    Serial.println("--------------Pantalla Encendida-------");
+    
+    Oled_Ini(tft);
 
     Serial.println("Humidity, Temperature");
 
@@ -250,15 +244,7 @@ void loop(){
     if (TP_act - TP_ant >= TP_fin){
       TP_ant = TP_act;
       // Se muestra el dato en la pantalla
-      if (WifiCon = 1){
-        tft.drawString("WiFi", 200, 5, 2);
-      }
-      tft.drawString((String(Humedad, 2)) + '%', 10, 100, 4);
-      tft.drawString((String(Temperatura, 2)) + 'C', 140, 100, 4);
-      Serial.print(Humedad);
-      Serial.print("% \t");
-      Serial.print(Temperatura);
-      Serial.println("C");
+      Show_Data(tft, WifiCon, Humedad, Temperatura);
     }
 
     // Transmision
