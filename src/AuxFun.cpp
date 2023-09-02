@@ -11,7 +11,7 @@
 
 void TurnLEDS(char LED[], char *topic, byte *payload, const uint8_t LED1, const uint8_t LED2){
   
-  int tam = (strlen(topic)) - 4;
+  int tam = (strlen(topic))-1;
   char pos = (char)(topic[tam]);
   char indx = (int)(pos - '0') - 1;
   int val = (char)payload[0];

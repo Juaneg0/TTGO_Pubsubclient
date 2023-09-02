@@ -18,7 +18,7 @@
 #define BUTTON_LEFT 0        // btn activo en bajo
 #define LONG_PRESS_TIME 3000 // 3000 milis = 3s
 
-const char* mqtt_server = "broker.mqtt-dashboard.com"; // MQTT Broker server
+const char* mqtt_server = "192.168.1.3"; // MQTT Broker server
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -60,7 +60,7 @@ const long TS_fin = 1000 / 40; // Tiempo en milisegundos para un tiempo de muest
 unsigned long TP_ant, TP_act;  // Tiempos para la muestra del dato en el OLED
 const long TP_fin = 500;       // Tiempo en milisegundos para una actualizacion de 2 Hz
 unsigned long Tx_ant, Tx_act;  // Tiempos para la muestra del dato en el OLED
-const long Tx_fin = 5000;      // Tiempo en milisegundos para una actualizacion de 0.2 Hz
+const long Tx_fin = 200;      // Tiempo en milisegundos para una actualizacion de 0.2 Hz
 unsigned long Rx_ant, Rx_act;  // Tiempos para la muestra del dato en el OLED
 const long Rx_fin = 100;       // Tiempo en milisegundos para una actualizacion de 40 Hz
 
@@ -129,8 +129,8 @@ void reconnect() {
         if (client.connect("TTGO")) {
             Serial.println("connected");
             //Subscribe
-            client.subscribe("esp32/led1");
-            client.subscribe("esp32/led2");
+            client.subscribe("esp32/Led1");
+            client.subscribe("esp32/Led2");
             
         } else {
             Serial.print("failed, rc=");
@@ -244,8 +244,8 @@ void loop(){
       // Se verifica datos de Ubidots
       if (!client.connected()){
         reconnect();
-        client.subscribe("esp32/led1");
-        client.subscribe("esp32/led2");
+        client.subscribe("esp32/Led1");
+        client.subscribe("esp32/Led2");
       }
       client.loop();
     }
