@@ -13,6 +13,7 @@
 #include "Settings.h"
 
 #include "oled.h"
+#include "AuxFun.h"
 
 #define BUTTON_LEFT 0        // btn activo en bajo
 #define LONG_PRESS_TIME 3000 // 3000 milis = 3s
@@ -27,35 +28,10 @@ char msg2[MSG_BUFFER_SIZE];
 
 /*** DEFINICIONES DE LAS FUNCIONES *******************************************************/
 //*** VARIABLES DE LEDS Y COMUNICACION ***/
-int tam = 0;
-char pos = '0';
-char val = '0';
-int indx = 0;
 char LED[2] = {'0', '0'};
 
 const uint8_t LED1 = 27; // Pin used to write data based on 1's and 0's coming from Ubidots
 const uint8_t LED2 = 26; // Pin used to write data based on 1's and 0's coming from Ubidots
-
-void TurnLEDS(char *topic, byte *payload){
-  tam = (strlen(topic)) - 4;
-  pos = (char)(topic[tam]);
-  indx = (int)(pos - '0') - 1;
-  val = (char)payload[0];
-
-  LED[indx] = val;
-
-  if (LED[0] == '1'){
-    digitalWrite(LED1, HIGH);
-  }else{
-    digitalWrite(LED1, LOW);
-  }
-
-  if (LED[1] == '1'){
-    digitalWrite(LED2, HIGH);
-  }else{
-    digitalWrite(LED2, LOW);
-  }
-}
 
 void callback(char *topic, byte *payload, unsigned int length){
   Serial.print("Message arrived [");
@@ -66,7 +42,7 @@ void callback(char *topic, byte *payload, unsigned int length){
   }
   Serial.println();
 
-  TurnLEDS(topic, payload);
+  TurnLEDS(LED, topic, payload, LED1, LED2);
 }
 /*****************************************************************************************/
 
@@ -132,7 +108,7 @@ void start_STA_client(){
   while (WiFi.status() != WL_CONNECTED){
     delay(500);
     // Serial.print(".");
-    if (cnt == 20) // Si después de 100 intentos no se conecta, vuelve a modo AP
+    if (cnt == 30) // Si después de 100 intentos no se conecta, vuelve a modo AP
       AP_mode_onRst();
     cnt++;
     Serial.println("attempt # " + (String)cnt);
@@ -341,12 +317,12 @@ void detect_long_press(){
 
   if (lastState == HIGH && currentState == LOW) // button is pressed
     pressedTime = millis();
-  else if (lastState == LOW && currentState == HIGH)
-  { // button is released
+  else if (lastState == LOW && currentState == HIGH){ 
+    // button is released
     releasedTime = millis();
 
-    // Serial.println("releasedtime" + (String)releasedTime);
-    // Serial.println("pressedtime" + (String)pressedTime);
+    Serial.println("releasedtime" + (String)releasedTime);
+    Serial.println("pressedtime" + (String)pressedTime);
 
     long pressDuration = releasedTime - pressedTime;
 
@@ -357,6 +333,6 @@ void detect_long_press(){
     }
   }
 
-  // save the the last state
+  // save the last state
   lastState = currentState;
 }
